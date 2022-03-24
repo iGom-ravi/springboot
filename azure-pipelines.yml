@@ -1,22 +1,57 @@
-# Maven
-# Build your Java project and run tests with Apache Maven.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/java
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
 
 trigger:
-- master
-
+ branches:
+   include:
+      - checkazure
+pr:
+   branches:
+    include:
+     - checkazure
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- task: Maven@3
-  inputs:
-    mavenPomFile: 'pom.xml'
-    mavenOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.8'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'package'
+stages:
+  - stage: 'Check'
+    displayName: 'Junit test'
+    jobs:
+      - job: 'junittesting'
+        displayName: 'Run'
+        steps:
+          - script: echo "this is working correctly"
+          - task: Maven@3
+            inputs:
+                mavenPomFile: 'pom.xml'
+                goals: 'clean package'
+                publishJUnitResults: true
+                testResultsFiles: '**/surefire-reports/TEST-*.xml'
+                javaHomeOption: 'JDKVersion'
+                mavenVersionOption: 'Default'
+                mavenAuthenticateFeed: false
+                effectivePomSkip: false
+                sonarQubeRunAnalysis: false
+                pmdRunAnalysis: true
+                findBugsRunAnalysis: true
+  - stage: 'Artifacts run'
+    displayName: 'build Art'
+    jobs:
+     - job: 'Buildaftyyhsvdf'
+       displayName: 'build arttt'
+       steps: 
+        - task: Maven@3
+          inputs:
+            mavenPomFile: 'pom.xml'
+            goals: 'clean package'
+            publishJUnitResults: true
+            testResultsFiles: '**/surefire-reports/TEST-*.xml'
+            javaHomeOption: 'JDKVersion'
+            mavenVersionOption: 'Default'
+            mavenAuthenticateFeed: false
+            effectivePomSkip: false
+            sonarQubeRunAnalysis: false
+            checkStyleRunAnalysis: true
+            pmdRunAnalysis: true
+            findBugsRunAnalysis: true
